@@ -1,0 +1,49 @@
+---
+  name: "network_cpu"
+
+  x-type: "hlfv1"
+
+  description: "Cpu usage tracking network"
+
+  version: "1.0"
+
+  client:
+    organization: org1
+    connection:
+      timeout:
+        peer:
+          endorser: 300
+          eventHub: 300
+          eventReg: 300
+        orderer: 300
+
+  channels:
+    cpuchannel:
+      orderers:
+        - orderer.cpu-use.com
+      peers:
+        peer0.org1.cpu-use.com:
+          endorsingPeer: true
+          chaincodeQuery: true
+          ledgerQuery: true
+          eventSource: true
+
+
+  organizations:
+    org1:
+      mspid: org1MSP
+      peers:
+        - peer0.org1.cpu-use.com
+
+  orderers:
+    orderer.cpu-use.com:
+      url: grpc://35.242.141.97:7050
+      grpcOptions:
+        ssl-target-name-override: orderer.cpu-use.com
+
+  peers:
+    peer0.org1.cpu-use.com:
+      url: grpc://localhost:7051
+      grpcOptions:
+        ssl-target-name-override: peer0.org1.cpu-use.com
+        request-timeout: 120001

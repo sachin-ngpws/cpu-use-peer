@@ -18,21 +18,21 @@ services:
       - CORE_PEER_GOSSIP_USELEADERELECTION=false
       - CORE_PEER_GOSSIP_ORGLEADER=true
       - CORE_PEER_ID=peer0.org1.cpu-use.com
-      - CORE_PEER_ADDRESS=10.154.0.4:7051
+      - CORE_PEER_ADDRESS=35.246.68.109:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_CHAINCODEADDRESS=10.154.0.4:7053
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7053
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=10.154.0.4:7051
+      - CORE_PEER_CHAINCODEADDRESS=35.246.68.109:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=35.246.68.109:7051
       - CORE_PEER_LOCALMSPID=org1MSP
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: peer node start
+    command: peer node start #--peer-chaincodedev
     volumes:
       - /var/run/:/host/var/run/
       - ./crypto-config/peerOrganizations/org1.cpu-use.com/peers/peer0.org1.cpu-use.com/msp:/etc/hyperledger/fabric/msp
       - peer0.org1.cpu-use.com:/var/hyperledger/production
     ports:
       - 7051:7051
-      - 7053:7053
+      - 7052:7052
     networks:
       - cpu
 
@@ -49,6 +49,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.org1.cpu-use.com:7051
       - CORE_PEER_LOCALMSPID=org1MSP
       - CORE_PEER_TLS_ENABLED=false
+      - CORE_CHAINCODE_ID_NAME="cpu-use:1.0"
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.cpu-use.com/users/Admin@org1.cpu-use.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
@@ -56,7 +57,30 @@ services:
       - /var/run/:/host/var/run/
       - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
       - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+      - ./../chaincode:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode
     depends_on:
       - peer0.org1.cpu-use.com
     networks:
       - cpu
+
+  # chaincode:
+    # container_name: chaincode
+    # image: hyperledger/fabric-ccenv:latest
+    # tty: true
+    # environment:
+      # - GOPATH=/opt/gopath
+      # - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # - FABRIC_LOGGING_SPEC=INFO
+      # - CORE_PEER_ID=chaincode
+      # - CORE_PEER_ADDRESS=peer0.org1.cpu-use.com:7051
+      # - CORE_PEER_LOCALMSPID=org1MSP
+      # - CORE_PEER_TLS_ENABLED=false
+      # - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/crypto/peerOrganizations/org1.cpu-use.com/users/Admin@org1.cpu-use.com/msp/signcerts/Admin@org1.cpu-use.com-cert.pem
+    # working_dir: /opt/gopath/src/chaincode
+    # command: /bin/bash -c 'sleep 6000000'
+    # volumes:
+      # - /var/run/:/host/var/run/
+      # - ./crypto-config:/opt/gopath/src/crypto
+      # - ./../chaincode:/opt/gopath/src/chaincode
+    # networks:
+      # - cpu
