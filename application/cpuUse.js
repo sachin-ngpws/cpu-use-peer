@@ -10,7 +10,7 @@ async function main(){
     console.log('Getting contract');
     let contract = await gateway.getContractInstance('org1',contract_name);
     console.log('Submitting transaction');
-    let asset = await contract.submitTransaction('addUsage','peer1',cpus[0].speed.toString(),cpus[1].speed.toString());
+    let asset = await contract.submitTransaction('addUsage','peer1',"speed :"+cpus[0].speed.toString()+" mem :"+os.freemem(),cpus[1].speed.toString());
 
     // console.log(JSON.parse(asset.toString()));
     return JSON.parse(asset.toString())
