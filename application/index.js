@@ -3,7 +3,8 @@ const app = express();
 const cors = require('cors');
 const port = 3000;
 
-const hist = require('./getHist')
+const hist = require('./getHist');
+const peers = require('./peers');
 
 app.use(cors());
 app.use(express.json());
@@ -14,6 +15,17 @@ app.get('/',(req,res) => res.send('Counterfeit CPU USAGE Server UP!!'));
 
 app.get('/history/',(req,res) => {
     hist.run().then((result)=>{
+    res.json(result);
+    }).catch((e) => { 
+        const result ={
+            error: e
+        }
+        res.status(500).send(result);
+    })
+});
+
+app.get('/peers/',(req,res) => {
+    peers.run().then((result)=>{
     res.json(result);
     }).catch((e) => { 
         const result ={
